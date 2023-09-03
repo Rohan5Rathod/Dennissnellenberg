@@ -1,95 +1,59 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client"
+import styles from "./page.module.css"
+import Image from "next/image"
+import { gsap } from "gsap"
+import { ScrollTrigger } from "gsap/all"
+import { useEffect, useRef } from "react"
 
-export default function Home() {
+export default function page() {
+
+  const firstText = useRef(null);
+  const secondText = useRef(null);
+  const slider = useRef(null);
+  let xPersent = 0;
+  let direction = 1;
+
+  useEffect(()=>{
+    gsap.registerPlugin(ScrollTrigger);
+    requestAnimationFrame(animation);
+
+    gsap.to(slider.current,{
+      scrollTrigger:{
+        trigger:document.documentElement,
+        start:0,
+        end:window.innerHeight,
+        scrub:0.25,
+        onUpdate: e => direction = e.direction * -1
+      },
+      x:"-=300px",
+    })
+  },[])
+
+  const animation = () =>{
+    if(xPersent <= -100){
+      xPersent = 0;
+    }
+    if(xPersent > 0){
+      xPersent = -100;
+    }
+    gsap.set(firstText.current, {xPercent: xPersent});
+    gsap.set(secondText.current, {xPercent: xPersent});
+    xPersent += 0.1 * direction;
+    requestAnimationFrame(animation);
+  }
+
   return (
+   <>
     <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+   <Image fill={true} src="/images/yulia-matvienko-ArA3S3k0wTU-unsplash.jpg" alt="img"/>
+   <div className={styles.sliderContainer}>
+    <div ref={slider} className={styles.slider}>
+      <p ref={firstText}>Freelance Photography -</p>
+      <p ref={secondText}>Freelance Photography -</p>
+    </div>
+   </div>
+   </main>
+   <div className={styles.hero}></div>
+   </>
   )
 }
